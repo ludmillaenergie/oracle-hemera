@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Oracle d'Héméra · Ludmilla Énergie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sombre: #09070a;
+    --or: #c8a96e;
+    --ivoire: #f0e8d6;
+    --ivoire-doux: #d8d0bc;
+    --aube: #e7b8a2;
+    --zenith: #f5edd8;
+    --crepuscule: #c87f4a;
+    --nuit: #5a6eaa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--sombre);
+    color: var(--ivoire);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .ecran { display: none; width: 100%; max-width: 980px; padding: 40px 20px 60px; text-align: center; }
+  .ecran.actif { display: block; animation: apparaitre 1s ease; }
+  @keyframes apparaitre { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  .titre-script { font-family: 'Allura', cursive; color: var(--or); font-size: 3.4rem; line-height: 1.1; margin-bottom: 6px; }
+  .sous-titre { font-family: 'Raleway', sans-serif; font-size: 0.72rem; letter-spacing: 4px; color: var(--ivoire-doux); text-transform: uppercase; margin-bottom: 30px; }
+  .texte { font-size: 1.25rem; line-height: 1.7; max-width: 620px; margin: 0 auto 26px; color: var(--ivoire); }
+  .texte em { font-style: italic; color: var(--or); }
+
+  .emblème, .embleme { width: 190px; border-radius: 12px; margin: 14px auto 26px; display: block; box-shadow: 0 0 40px rgba(200,169,110,0.25); }
+
+  input[type="password"], input[type="text"], textarea {
+    background: rgba(240,232,214,0.06);
+    border: 1px solid rgba(200,169,110,0.45);
+    border-radius: 8px;
+    color: var(--ivoire);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    padding: 13px 18px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    outline: none;
+    transition: border 0.3s;
+  }
+  input:focus, textarea:focus { border-color: var(--or); }
+  textarea { min-height: 84px; resize: vertical; text-align: left; }
+  ::placeholder { color: rgba(216,208,188,0.5); }
+
+  .bouton {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid var(--or);
+    color: var(--or);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 14px 34px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 18px 8px 0;
+    transition: all 0.35s;
+  }
+  .bouton:hover { background: var(--or); color: var(--sombre); }
+  .bouton.discret { border-color: rgba(200,169,110,0.35); color: var(--ivoire-doux); font-size: 0.7rem; padding: 10px 22px; }
+  .bouton.discret:hover { background: transparent; border-color: var(--or); color: var(--or); }
+
+
+  .situations { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+  .situation-btn {
+    border: 1px solid rgba(200,169,110,0.4); border-radius: 30px;
+    padding: 11px 22px; cursor: pointer; font-size: 1.05rem;
+    color: var(--ivoire-doux); transition: all 0.3s; background: rgba(240,232,214,0.03);
+  }
+  .situation-btn:hover { border-color: var(--or); color: var(--ivoire); }
+  .situation-btn.choisi { background: var(--or); color: var(--sombre); border-color: var(--or); }
+
+  .erreur { color: #d98a8a; font-size: 1rem; margin-top: 12px; min-height: 24px; }
+
+  .modes { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+  .mode {
+    border: 1px solid rgba(200,169,110,0.4);
+    border-radius: 14px;
+    padding: 28px 26px;
+    width: 300px;
+    cursor: pointer;
+    transition: all 0.35s;
+    background: rgba(240,232,214,0.03);
+  }
+  .mode:hover { border-color: var(--or); background: rgba(200,169,110,0.07); transform: translateY(-3px); }
+  .mode h3 { font-family: 'Allura', cursive; font-size: 2rem; color: var(--or); font-weight: 400; margin-bottom: 8px; }
+  .mode p { font-size: 1.05rem; line-height: 1.5; color: var(--ivoire-doux); }
+
+  .intention-rappel { font-style: italic; font-size: 1.1rem; color: var(--ivoire-doux); max-width: 560px; margin: 0 auto 30px; }
+  .intention-rappel span { color: var(--or); }
+
+  .cartes { display: flex; gap: 26px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+  .emplacement { width: 200px; }
+  .phase-label { font-family: 'Raleway', sans-serif; font-size: 0.66rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+  .phase-aube .phase-label { color: var(--aube); }
+  .phase-zenith .phase-label { color: var(--zenith); }
+  .phase-crepuscule .phase-label { color: var(--crepuscule); }
+  .phase-nuit .phase-label { color: var(--nuit); }
+
+  .carte { perspective: 1200px; cursor: pointer; }
+  .carte-interieur {
+    position: relative; width: 100%; aspect-ratio: 2 / 3;
+    transform-style: preserve-3d;
+    transition: transform 1.1s cubic-bezier(0.4, 0.1, 0.2, 1);
+  }
+  .carte.retournee .carte-interieur { transform: rotateY(180deg); }
+  .carte-face, .carte-dos {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 6px 26px rgba(0,0,0,0.6);
+  }
+  .carte-dos img, .carte-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .carte-face { transform: rotateY(180deg); }
+  .carte:not(.retournee):hover .carte-interieur { transform: rotateY(0deg) translateY(-6px); }
+
+  .invite-flip { font-family: 'Raleway', sans-serif; font-size: 0.68rem; letter-spacing: 2px; color: var(--ivoire-doux); margin-top: 10px; text-transform: uppercase; }
+
+  .paroles { max-width: 660px; margin: 30px auto 0; text-align: left; }
+  .parole {
+    border-left: 2px solid var(--or);
+    padding: 6px 0 6px 22px;
+    margin-bottom: 32px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .parole.visible { opacity: 1; transform: none; }
+  .parole h4 { font-size: 1.5rem; color: var(--or); font-weight: 500; margin-bottom: 2px; }
+  .parole .voix { font-family: 'Raleway', sans-serif; font-size: 0.64rem; letter-spacing: 3px; text-transform: uppercase; color: var(--ivoire-doux); margin-bottom: 10px; }
+  .parole .msg { font-size: 1.22rem; line-height: 1.75; font-style: italic; color: var(--ivoire); }
+
+  .cloture { display: none; margin-top: 20px; }
+  .cloture.visible { display: block; animation: apparaitre 1.2s ease; }
+  .cloture p { font-family: 'Allura', cursive; font-size: 1.9rem; color: var(--or); margin-bottom: 8px; }
+
+
+  .mot-cle { font-family: 'Raleway', sans-serif; font-size: 0.78rem; letter-spacing: 4px; color: var(--or); margin-top: 16px; }
+  .annonce-titre { font-family: 'Raleway', sans-serif; font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase; color: var(--ivoire-doux); margin: 8px 0 5px; }
+  .annonce { font-size: 1.15rem; line-height: 1.65; color: var(--ivoire); }
+  .synthese { display: none; max-width: 660px; margin: 14px auto 0; border: 1px solid rgba(200,169,110,0.45); border-radius: 14px; padding: 26px 30px; background: rgba(200,169,110,0.05); text-align: left; }
+  .synthese.visible { display: block; animation: apparaitre 1.2s ease; }
+  .synthese h5 { font-family: 'Allura', cursive; font-size: 1.7rem; color: var(--or); font-weight: 400; margin-bottom: 10px; text-align: center; }
+  .synthese p { font-size: 1.22rem; line-height: 1.75; color: var(--ivoire); }
+
+
+  .actions-tirage { display: none; margin-top: 22px; }
+  .actions-tirage.visible { display: block; animation: apparaitre 1s ease; }
+  .retour-copie { font-family: 'Raleway', sans-serif; font-size: 0.7rem; letter-spacing: 2px; color: var(--or); min-height: 20px; margin-top: 10px; }
+
+  footer { font-family: 'Raleway', sans-serif; font-size: 0.62rem; letter-spacing: 1px; color: rgba(216,208,188,0.45); padding: 26px 20px 34px; text-align: center; max-width: 640px; line-height: 1.7; }
+
+  @media (max-width: 700px) {
+    .titre-script { font-size: 2.6rem; }
+    .emplacement { width: 150px; }
+    .cartes { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ÉCRAN 1 : PORTE -->
+<section id="ecran-porte" class="ecran actif">
+  <h1 class="titre-script">L'Oracle d'Héméra</h1>
+  <p class="sous-titre">Oracle prédictif sur l'amour</p>
+  <img class="embleme" src="cartes/00-dos-de-carte.jpg" alt="Emblème de l'Oracle d'Héméra">
+  <p class="texte">De l'union de la Nuit et des Ténèbres sont nés le Jour et la Lumière.<br>Héméra voit. Éther ordonne. Nyx garde les secrets.</p>
+  <input type="password" id="mot-de-passe" placeholder="Mot de passe" autocomplete="off">
+  <div class="erreur" id="erreur-porte"></div>
+  <button class="bouton" onclick="verifierPorte()">Entrer</button>
+</section>
+
+<!-- ÉCRAN 2 : RITUEL -->
+<section id="ecran-rituel" class="ecran">
+  <h1 class="titre-script">Le Rituel</h1>
+  <p class="sous-titre">Avant de tirer</p>
+  <p class="texte">Les divinités parlent à celles et ceux qui se présentent.<br>Dis ton prénom, puis pose ton intention : la question que ton cœur porte.</p>
+  <input type="text" id="prenom" placeholder="Ton prénom" autocomplete="off"><br><br>
+  <textarea id="intention" placeholder="Ton intention... (elle reste entre toi et l'oracle, rien n'est enregistré)"></textarea>
+  <div class="situations">
+    <div class="situation-btn" data-situation="rencontre" onclick="choisirSituation(this)">J'attends une rencontre</div>
+    <div class="situation-btn" data-situation="relation" onclick="choisirSituation(this)">Je vis une relation</div>
+    <div class="situation-btn" data-situation="separation" onclick="choisirSituation(this)">Je traverse une séparation ou une absence</div>
+  </div>
+  <div class="erreur" id="erreur-rituel"></div>
+  <button class="bouton" onclick="validerRituel()">Poser mon intention</button>
+</section>
+
+<!-- ÉCRAN 3 : MODES -->
+<section id="ecran-modes" class="ecran">
+  <h1 class="titre-script">Choisis ton tirage</h1>
+  <p class="sous-titre" id="salutation"></p>
+  <div class="modes">
+    <div class="mode" onclick="lancerTirage('parole')">
+      <h3>La Parole du Jour</h3>
+      <p>Une carte. Une divinité prend la parole sur ce que tu vis. Le geste quotidien.</p>
+    </div>
+    <div class="mode" onclick="lancerTirage('roue')">
+      <h3>La Roue du Jour</h3>
+      <p>Quatre cartes, une par phase. L'Aube, le Zénith, le Crépuscule, la Nuit : le cycle complet de ton histoire.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ÉCRAN 4 : TIRAGE -->
+<section id="ecran-tirage" class="ecran">
+  <h1 class="titre-script" id="titre-tirage"></h1>
+  <p class="intention-rappel" id="rappel-intention"></p>
+  <div class="cartes" id="zone-cartes"></div>
+  <div class="paroles" id="zone-paroles"></div>
+  <div class="synthese" id="synthese"></div>
+  <div class="actions-tirage" id="actions-tirage">
+    <button class="bouton discret" id="btn-copier" onclick="copierSynthese()">Copier la synthèse</button>
+    <button class="bouton discret" onclick="telechargerTirage()">Télécharger mon tirage</button>
+    <div class="retour-copie" id="retour-copie"></div>
+  </div>
+  <div class="cloture" id="cloture">
+    <p id="cloture-texte"></p>
+    <button class="bouton discret" onclick="nouveauTirage()">Nouveau tirage</button>
+  </div>
+</section>
+
+<footer>
+  L'Oracle d'Héméra est un support de guidance symbolique et poétique. Il ne prédit pas l'avenir de manière littérale et ne remplace en aucun cas un avis médical, psychologique ou professionnel. Ton intention et ton prénom ne sont ni enregistrés ni transmis : tout reste dans ton navigateur.<br>© Ludmilla Énergie · Traverser · Relier · Devenir
+</footer>
+
+<script>
+const MOT_DE_PASSE = "hemera2026";
+
+const PHASES = {
+  aube:       { nom: "L'Aube",       cle: "aube" },
+  zenith:     { nom: "Le Zénith",    cle: "zenith" },
+  crepuscule: { nom: "Le Crépuscule", cle: "crepuscule" },
+  nuit:       { nom: "La Nuit",      cle: "nuit" }
+};
+
+const VOIX = { H: "Voix d'Héméra", E: "Voix d'Éther", N: "Voix de Nyx" };
+
+const CARTES = [
+  { n: 1,  titre: "Le Premier Regard", phase: "aube", voix: "H", img: "01-le-premier-regard.jpg",
+    mot: "OUI",
+    annonces: { rencontre: "Oui, une rencontre arrive. Elle est déjà en route, tu n'as rien à forcer.", relation: "Vous allez vous redécouvrir. Un regard neuf se pose sur votre lien, comme au premier jour.", separation: "Ton cœur va se rouvrir. Une nouvelle présence se profile déjà, même si tu ne la vois pas encore." },
+    syntheses: { rencontre: "Une rencontre se prépare, elle est déjà en chemin.", relation: "Votre lien s'apprête à renaître sous un regard neuf.", separation: "Ton cœur se rouvre, une nouvelle présence se profile." },
+    parole: "Je suis venue avec l'aube, et j'ai vu deux chemins se reconnaître. L'un est le tien. L'autre marche déjà vers toi. Ce n'est ni un rêve, ni une attente. Tiens-toi dans ma lumière. Il saura te trouver. Je l'ai vu avant toi." },
+  { n: 2,  titre: "La Brume qui se lève", phase: "aube", voix: "H", img: "02-la-brume-qui-se-leve.jpg",
+    mot: "CLARTÉ PROCHE",
+    annonces: { rencontre: "Tu vas bientôt comprendre ce qui bloquait ta vie amoureuse. La période floue se termine.", relation: "Tu vas bientôt y voir clair. Ses intentions vont se révéler d'elles-mêmes, la confusion se termine.", separation: "Tu vas enfin comprendre ce qui s'est vraiment passé. Cette clarté te libérera." },
+    syntheses: { rencontre: "Le flou qui entourait ta vie amoureuse se dissipe.", relation: "La confusion touche à sa fin, les intentions vont se dévoiler.", separation: "La vérité sur cette histoire se dévoile, et elle te libère." },
+    parole: "Aucune brume ne résiste à ma lumière. Celle qui voile ton histoire se retire déjà. Ses silences, ses gestes que tu ne sais pas lire : patience. Je lève le voile. Bientôt, ses intentions seront nues devant toi. Rien n'échappe au jour." },
+  { n: 3,  titre: "L'Élan Partagé", phase: "aube", voix: "H", img: "03-l-elan-partage.jpg",
+    mot: "RÉCIPROQUE",
+    annonces: { rencontre: "Quelqu'un que tu as croisé ou remarqué ressent la même attirance. Ce n'est pas dans ta tête, ose un signe.", relation: "Tes sentiments sont partagés. Tu peux faire le premier pas, il sera bien reçu.", separation: "De son côté aussi, quelque chose vibre encore. Le détachement n'est pas aussi complet qu'il le paraît." },
+    syntheses: { rencontre: "Une attirance naissante est réciproque, un signe suffira.", relation: "Ce qui vous lie est partagé, l'élan existe des deux côtés.", separation: "L'élan n'est pas éteint des deux côtés, quelque chose vibre encore." },
+    parole: "J'éclaire les deux rives à la fois. Et je te le dis : ce que tu portes, il le porte aussi. Le même élan. Le même feu. Fais un pas. Ma lumière est sur vous deux, et ma lumière ne ment pas." },
+  { n: 4,  titre: "La Rencontre Écrite", phase: "aube", voix: "E", img: "04-la-rencontre-ecrite.jpg",
+    mot: "DESTINÉE",
+    annonces: { rencontre: "La personne qui doit croiser ta route la croisera. Tu n'as pas à la chercher partout, elle est inscrite.", relation: "Cette rencontre n'était pas un hasard. Ce lien a une raison d'être, fais-lui confiance.", separation: "Cette histoire ne devait rien au hasard. Ce qu'elle t'a appris prépare ce qui vient." },
+    syntheses: { rencontre: "Une rencontre inscrite sur ta route approche, tu n'as pas à la forcer.", relation: "Ce lien ne doit rien au hasard, il a une raison d'être.", separation: "Cette histoire avait une raison d'être, et elle prépare ce qui vient." },
+    parole: "Avant que les hommes n'écrivent leur histoire, j'avais déjà tracé leurs rencontres. Celle-ci est l'une d'elles. Le hasard n'y a aucune part. Tu n'as pas à comprendre. Ce qui est écrit se lit en marchant." },
+  { n: 5,  titre: "Le Ciel qui s'ouvre", phase: "aube", voix: "E", img: "05-le-ciel-qui-s-ouvre.jpg",
+    mot: "PÉRIODE FAVORABLE",
+    annonces: { rencontre: "Une période favorable aux rencontres s'ouvre. Sors, accepte, montre-toi : les portes s'ouvrent en ce moment.", relation: "Une période favorable commence pour votre couple. Les blocages se lèvent, c'est le moment d'avancer.", separation: "Le ciel se dégage après l'épreuve. Ce qui bloquait ton cœur se retire, tu peux de nouveau avancer." },
+    syntheses: { rencontre: "Une période favorable aux rencontres s'ouvre, saisis-la.", relation: "Une période favorable s'ouvre pour vous deux, les blocages se lèvent.", separation: "Après l'épreuve, le ciel se dégage et ton cœur peut avancer." },
+    parole: "J'ouvre. C'est mon heure, et c'est la tienne. Les portes que tu croyais scellées tournent sur leurs gonds. Ce qui fermait ton cœur se retire. Avance maintenant. Je tiens le ciel ouvert au-dessus de toi." },
+  { n: 6,  titre: "La Promesse d'Éther", phase: "aube", voix: "E", img: "06-la-promesse-d-ether.jpg",
+    mot: "POTENTIEL RÉEL",
+    annonces: { rencontre: "Une belle histoire est en germe pour toi, mais elle prendra son temps. Ne force pas le calendrier.", relation: "Ce lien a un vrai potentiel, mais il lui faut du temps. Ne précipite rien, laisse-le grandir à son rythme.", separation: "Quelque chose peut renaître, entre vous ou ailleurs. Mais rien ne se reconstruira dans la précipitation." },
+    syntheses: { rencontre: "Une belle histoire est en germe, elle demandera de la patience.", relation: "Le lien a un potentiel réel et grandit à son rythme, pas au tien.", separation: "Une renaissance est possible, à condition de lui laisser du temps." },
+    parole: "Je tiens ce lien dans mes mains : une pousse d'or, vivante, vraie. Elle grandira selon sa mesure, jamais selon ton impatience. Force-la et elle casse. Laisse-la et elle tiendra le ciel. Ma promesse est faite. La patience est ta part." },
+  { n: 7,  titre: "La Graine dans l'Ombre", phase: "aube", voix: "N", img: "07-la-graine-dans-l-ombre.jpg",
+    mot: "EN SECRET",
+    annonces: { rencontre: "Quelqu'un pense à toi sans que tu le saches. Quelque chose se prépare en secret, tu le découvriras bientôt.", relation: "L'autre porte quelque chose qu'il n'a pas encore dit : un projet, un geste, une décision se prépare pour vous.", separation: "Tu occupes encore ses pensées, plus que tu ne l'imagines. Quelque chose germe en silence de son côté." },
+    syntheses: { rencontre: "Quelque chose se prépare à ton insu, quelqu'un pense à toi.", relation: "L'autre prépare en secret quelque chose pour vous deux.", separation: "Tu occupes encore ses pensées, quelque chose germe en silence." },
+    parole: "On me croit vide parce qu'on ne voit que mon obscurité. Pourtant je porte tout ce qui n'a pas encore vu le jour. Écoute : quelque part dans mon ombre, quelqu'un pense à toi. Une graine te concernant est en terre. Tu ne le sais pas. Moi, je le sais." },
+  { n: 8,  titre: "Le Cœur Voilé", phase: "aube", voix: "N", img: "08-le-coeur-voile.jpg",
+    mot: "SENTIMENTS CACHÉS",
+    annonces: { rencontre: "Quelqu'un de ton entourage cache des sentiments pour toi. Regarde autour : l'amour est peut-être déjà là, voilé.", relation: "L'autre ressent plus qu'il ne le montre. Ne juge pas ses sentiments sur ses gestes, il cache par pudeur ou par peur.", separation: "Derrière son silence ou sa froideur, l'autre ressent plus qu'il ne montre. Ne conclus rien sur ses gestes." },
+    syntheses: { rencontre: "Des sentiments cachés existent déjà dans ton entourage.", relation: "Des sentiments réels restent cachés, plus grands que ce qui se montre.", separation: "Derrière le silence, ses sentiments sont plus vivants qu'il n'y paraît." },
+    parole: "Les cœurs se déshabillent dans ma nuit. J'ai vu le sien. Il déborde de ce qu'il ne montre pas. Ses gestes sont en retard sur son cœur, ne les laisse pas te mentir. Ce qu'il cache est plus grand que ce qu'il donne à voir. Je le garde jusqu'à l'heure." },
+  { n: 9,  titre: "L'Aube Retenue", phase: "aube", voix: "N", img: "09-l-aube-retenue.jpg",
+    mot: "PAS ENCORE",
+    annonces: { rencontre: "Oui, mais pas tout de suite. Quelque chose retarde encore la rencontre, ce n'est pas un refus, juste une question de moment.", relation: "L'étape que tu attends viendra, mais pas tout de suite. Ce délai n'est pas un refus.", separation: "Rien ne se rejouera ni ne se dénouera tout de suite. Le temps travaille encore, ne force pas la porte." },
+    syntheses: { rencontre: "La rencontre viendra, mais son heure n'est pas encore là.", relation: "L'étape attendue viendra, mais son heure n'est pas encore là.", separation: "Rien ne se dénoue encore, le temps travaille." },
+    parole: "C'est moi qui tiens le voile. Pas par cruauté : par sagesse. Derrière, ton aube pousse déjà. Je la sens contre mes mains. Elle viendra, mais pas avant son heure. Je n'ai jamais retenu un jour pour toujours." },
+  { n: 10, titre: "La Vérité Nue", phase: "zenith", voix: "H", img: "10-la-verite-nue.jpg",
+    mot: "AUCUNE ILLUSION",
+    annonces: { rencontre: "La situation est exactement ce qu'elle paraît : s'il y a de l'intérêt, il est vrai ; s'il n'y en a pas, n'invente pas. Fie-toi à ce que tu vois.", relation: "Ce que tu vois est vrai. Ses intentions sont exactement ce qu'elles paraissent, tu peux cesser de douter.", separation: "La situation est ce qu'elle paraît, sans message caché. Lis les faits tels qu'ils sont, pas tels que tu les espères." },
+    syntheses: { rencontre: "En ce moment, ce que tu vois de ta situation est la vérité, sans double fond.", relation: "En ce moment, ce que tu vois est la vérité, sans double fond.", separation: "En ce moment, les faits disent la vérité, sans message caché." },
+    parole: "À mon zénith, rien ne se cache. Regarde l'eau : le reflet est fidèle, sans ombre où tricher. Ce que tu vois de lui est ce qu'il est. Ses intentions sont exactement ce qu'elles paraissent. Cesse de chercher un double fond. Il n'y en a pas. Je le vois." },
+  { n: 11, titre: "Le Feu Assumé", phase: "zenith", voix: "H", img: "11-le-feu-assume.jpg",
+    mot: "AU GRAND JOUR",
+    annonces: { rencontre: "Cesse de cacher ton désir d'aimer. Assume-le, dis-le, montre-toi : c'est en te montrant que tu seras trouvée.", relation: "Cette relation sort de l'ombre. C'est le moment de l'assumer, de la montrer, de la dire.", separation: "Ce que tu ressens encore mérite d'être dit à voix haute, au moins à toi-même. Ce qui est assumé cesse de ronger." },
+    syntheses: { rencontre: "C'est en te montrant au grand jour que les choses s'ouvrent.", relation: "À présent, ce lien s'assume au grand jour, il n'a plus à se cacher.", separation: "Ce qui est enfin assumé et dit cesse de peser." },
+    parole: "Ce feu n'a plus besoin de murs. Il brûle en plein jour, et je le tiens sous ma lumière. L'heure des amours cachées est passée : ce lien se montre, s'affiche, se dit. Monte les marches. Ce qui s'assume sous mon regard ne craint plus rien." },
+  { n: 12, titre: "Les Deux Soleils", phase: "zenith", voix: "H", img: "12-les-deux-soleils.jpg",
+    mot: "ÉQUILIBRE",
+    annonces: { rencontre: "La belle rencontre sera d'égal à égal : quelqu'un qui brille sans t'éteindre. N'accepte rien de moins.", relation: "Vous êtes à égalité, chacun garde sa lumière. C'est un lien rare et sain, préserve cet équilibre.", separation: "Retrouve ta propre lumière avant tout lien. L'équilibre se reconstruit d'abord en toi." },
+    syntheses: { rencontre: "Ce qui se présente à toi doit briller sans t'éteindre, c'est le critère.", relation: "Le lien est à son point d'équilibre, chacun brille sans éteindre l'autre.", separation: "Ta propre lumière se rallume, et c'est elle qui rééquilibre tout." },
+    parole: "Deux soleils dans mon ciel, et aucun n'éteint l'autre. C'est rare. C'est vous. Chacun brille de son propre feu, et vos lumières se touchent sans se dévorer. Garde cet équilibre : il est la forme la plus haute de l'amour. Peu le connaissent. Je vous vois." },
+  { n: 13, titre: "L'Heure Juste", phase: "zenith", voix: "E", img: "13-l-heure-juste.jpg",
+    mot: "MAINTENANT",
+    annonces: { rencontre: "C'est le moment d'oser : accepter l'invitation, envoyer le message, franchir le pas. Cette fenêtre ne se représentera pas de sitôt.", relation: "C'est le moment d'agir ou de parler. Ce que tu retiens doit sortir maintenant.", separation: "Si quelque chose doit être dit ou clos, c'est maintenant : un mot, une décision, un dernier geste. Après, l'heure sera passée." },
+    syntheses: { rencontre: "L'heure d'oser est arrivée, c'est maintenant.", relation: "L'heure d'agir ou de parler est arrivée, c'est maintenant.", separation: "L'heure de dire ou de clore est arrivée, c'est maintenant." },
+    parole: "Regarde le cadran : l'ombre a disparu. C'est l'heure exacte, celle que tu attendais sans connaître son nom. Ce qui doit être dit, dis-le maintenant. Ce qui doit être fait, fais-le maintenant. Je ne tiens pas cette heure ouverte deux fois. Ainsi est le temps." },
+  { n: 14, titre: "Le Sceau du Ciel", phase: "zenith", voix: "E", img: "14-le-sceau-du-ciel.jpg",
+    mot: "ENGAGEMENT",
+    annonces: { rencontre: "Ce qui vient pour toi n'est pas une passade : la prochaine histoire portera un vrai engagement.", relation: "Cette union se confirme. Une étape d'engagement se présente ou se consolide, elle est solide.", separation: "Ce qui était scellé entre vous laisse une marque, mais le ciel scelle aussi les nouveaux départs. Un engagement t'attend encore, ici ou ailleurs." },
+    syntheses: { rencontre: "Ce qui vient pour toi porte la marque d'un vrai engagement.", relation: "L'union se confirme et s'apprête à franchir une étape d'engagement.", separation: "Un engagement vrai t'attend encore, ici ou ailleurs." },
+    parole: "Je descends rarement. Quand je descends, c'est pour sceller. Vos mains jointes portent désormais ma marque : cette union est confirmée d'en haut. Une étape s'ouvre, engagement, promesse, alliance. Ce que je scelle, les vents ne le défont pas." },
+  { n: 15, titre: "La Traversée du Midi", phase: "zenith", voix: "E", img: "15-la-traversee-du-midi.jpg",
+    mot: "ÉPREUVE DE VÉRITÉ",
+    annonces: { rencontre: "Ta patience est mise à l'épreuve, et cette épreuve te prépare. Ce que tu traverses trie ce que tu veux vraiment.", relation: "Votre lien traverse un test. Si vous le passez ensemble, il en sortira durablement renforcé.", separation: "Tu traverses l'épreuve en pleine lumière, sans pouvoir détourner les yeux. Mais ce qui se traverse ainsi ne revient pas hanter." },
+    syntheses: { rencontre: "Ta patience traverse son épreuve, et elle te prépare.", relation: "Le lien traverse son épreuve de vérité, et il peut la passer.", separation: "Tu traverses l'épreuve en pleine lumière, et elle ne reviendra pas." },
+    parole: "Tout lien passe un jour sur ce pont, sous la lumière la plus dure. C'est votre heure de traversée. La clarté éprouve : elle montre tout, elle ne pardonne rien. Avancez ensemble, d'un même pas. Ce qui traverse mon midi ne craindra plus aucun soir. Je vous attends de l'autre côté." },
+  { n: 16, titre: "L'Ombre au Zénith", phase: "zenith", voix: "N", img: "16-l-ombre-au-zenith.jpg",
+    mot: "NON-DIT",
+    annonces: { rencontre: "Quelque chose n'est pas clair dans une situation qui semble limpide : une information te manque. Pose les questions avant de t'avancer.", relation: "Quelque chose n'est pas dit entre vous. Pose la question que tu retiens avant que ce silence ne grandisse.", separation: "Un non-dit pèse encore sur cette histoire : quelque chose ne t'a pas été dit, ou tu ne l'as pas dit. Il éclaire tout." },
+    syntheses: { rencontre: "Mais une information te manque encore, pose les questions.", relation: "Mais un non-dit circule entre vous, et il demande à être posé sur la table.", separation: "Mais un non-dit pèse encore sur cette histoire, et il éclaire tout." },
+    parole: "Même à midi, je suis là. Petite. Discrète. Au pied des colonnes. Vous riez dans la lumière, et pourtant quelque chose n'est pas dit entre vous. Je le sais : c'est dans mon ombre qu'on l'a déposé. Pose la question que tu retiens. Ce silence-là grandit plus vite que vous." },
+  { n: 17, titre: "Le Regard Ailleurs", phase: "zenith", voix: "N", img: "17-le-regard-ailleurs.jpg",
+    mot: "VIGILANCE",
+    annonces: { rencontre: "Tu regardes dans la mauvaise direction : la personne que tu fixes n'est pas celle qui te regarde. Tourne la tête.", relation: "Son attention se détourne, quelque chose ou quelqu'un occupe ses pensées. Ce n'est pas une trahison, mais parle-lui avant que ça ne s'installe.", separation: "Son regard s'est tourné ailleurs, ou le tien devrait le faire. Regarde ce qui est, pas ce qui fut." },
+    syntheses: { rencontre: "Mais ton regard se pose au mauvais endroit, tourne la tête.", relation: "Mais une attention se détourne, et il faut la ramener avant qu'elle ne s'installe ailleurs.", separation: "Mais un regard s'est tourné ailleurs, et il faut regarder ce qui est." },
+    parole: "Tu le regardes. Il regarde l'horizon. Ce qui l'attire là-bas, je le connais : il l'a confié à ma nuit sans te le confier à toi. Ce n'est pas encore une trahison. C'est une distraction du cœur. Mais les distractions du cœur ont un poids. Ouvre les yeux avant qu'elles ne choisissent à sa place." },
+  { n: 18, titre: "Le Trop de Lumière", phase: "zenith", voix: "N", img: "18-le-trop-de-lumiere.jpg",
+    mot: "ILLUSION",
+    annonces: { rencontre: "Tu idéalises quelqu'un ou l'idée même de l'amour. Redescends sur terre : c'est là que les vraies rencontres ont lieu.", relation: "Tu idéalises. Tu vois ce que tu veux voir, pas la personne réelle. Prends du recul pour la regarder telle qu'elle est.", separation: "Le souvenir embellit. Tu ne pleures pas la personne réelle mais son image dorée. Regarde ce qui était vraiment." },
+    syntheses: { rencontre: "Mais une idéalisation t'aveugle, et le regard doit redescendre sur terre.", relation: "Mais tu vois ce que tu veux voir, et le regard demande à redevenir lucide.", separation: "Mais le souvenir embellit, et il faut regarder ce qui était vraiment." },
+    parole: "Trop de lumière aveugle autant que ma nuit. Tu le regardes tant qu'il s'est dissous dans ton éblouissement : tu vois ce que tu veux voir, pas ce qu'il est. Prends le pan d'ombre que je te tends. C'est dans la pénombre qu'on voit enfin les visages. Reviens à lui avec des yeux neufs." },
+  { n: 19, titre: "La Lumière Rasante", phase: "crepuscule", voix: "H", img: "19-la-lumiere-rasante.jpg",
+    mot: "LUCIDITÉ",
+    annonces: { rencontre: "Tu vois enfin pourquoi les histoires passées n'ont pas tenu. Cette lucidité change tout pour la suite.", relation: "Tu vois enfin la relation telle qu'elle est, avec ses forces et ses failles. Cette lucidité est une chance : on ne répare que ce qu'on a vu.", separation: "Tu vois enfin cette histoire telle qu'elle fut, sans fard. Cette vérité pique, mais c'est elle qui referme." },
+    syntheses: { rencontre: "Un tournant s'amorce : tu comprends enfin les schémas passés, et ça change tout.", relation: "Un tournant s'amorce : tu vois enfin l'histoire telle qu'elle est, et cette lucidité va tout changer.", separation: "Un tournant s'amorce : tu vois enfin l'histoire telle qu'elle fut, et cette vérité referme." },
+    parole: "Ma lumière baisse, mais ne t'y trompe pas : c'est maintenant qu'elle montre le plus. À cette heure, chaque relief se lève, chaque faille projette son ombre. Tu vois enfin votre histoire telle qu'elle est, avec ses pierres et ses sillons. Ce n'est pas une punition. C'est un cadeau. On ne répare que ce qu'on a vu." },
+  { n: 20, titre: "Le Choix des Chemins", phase: "crepuscule", voix: "H", img: "20-le-choix-des-chemins.jpg",
+    mot: "DÉCISION",
+    annonces: { rencontre: "Il va falloir choisir : entre deux possibles, ou entre attendre et provoquer. Rester spectatrice n'est plus un chemin.", relation: "Tu arrives à une croisée : il va falloir choisir. Rester dans l'entre-deux n'est plus possible, mais aucune des deux routes n'est un piège.", separation: "Il faut choisir : rouvrir la porte ou la fermer pour de bon. L'entre-deux te coûte plus cher que n'importe lequel des deux choix." },
+    syntheses: { rencontre: "Le tournant est une décision : il faudra choisir, et aucune route n'est un piège.", relation: "Le tournant est une décision : il faudra choisir une route, et aucune n'est un piège.", separation: "Le tournant est une décision : rouvrir ou fermer, mais plus d'entre-deux." },
+    parole: "Deux chemins, et ma lanterne éclaire les deux. Je ne choisirai pas pour toi. L'un monte, l'autre descend, et rester à la croisée n'est plus un chemin. Ce que je peux te donner, c'est ma lumière : aucun des deux n'est un piège. Mais il faut marcher. Le soir n'attend pas les indécis." },
+  { n: 21, titre: "Les Couleurs du Soir", phase: "crepuscule", voix: "H", img: "21-les-couleurs-du-soir.jpg",
+    mot: "BILAN",
+    annonces: { rencontre: "Avant la prochaine histoire, l'heure est au bilan : qu'est-ce que les précédentes t'ont appris ? Ce tri prépare la place.", relation: "L'heure est au bilan, pas à la rupture. Pèse honnêtement ce que ce lien t'apporte avant de décider de sa suite.", separation: "Regarde ce que cette histoire t'a donné, pas seulement ce qu'elle t'a pris. Ce bilan-là apaise et libère." },
+    syntheses: { rencontre: "L'heure est au bilan de ce qui fut, et ce tri prépare la place.", relation: "L'heure est au bilan : ce que ce lien vaut vraiment se révèle avant toute décision.", separation: "L'heure est au bilan : ce que l'histoire a donné compte autant que ce qu'elle a pris." },
+    parole: "Regarde ce que le couchant fait de votre histoire : il l'embrase. Ce qui fut vécu prend ce soir sa vraie valeur, les mains prises, les danses, les rires. L'heure n'est pas à la fin. L'heure est au bilan sincère. Pèse ce que ce lien t'a donné avant de décider ce qu'il deviendra. Je tiens la lumière pendant que tu comptes." },
+  { n: 22, titre: "Le Passage Obligé", phase: "crepuscule", voix: "E", img: "22-le-passage-oblige.jpg",
+    mot: "TRANSFORMATION",
+    annonces: { rencontre: "Quelque chose doit changer en toi ou dans ta vie avant la rencontre : c'est ce passage qui la rend possible.", relation: "Votre histoire change de forme, et ce changement est inévitable. Ne résiste pas : ce qui vous attend de l'autre côté est neuf.", separation: "Cette fin était un passage, pas une punition. Tu ne peux pas revenir en arrière, seulement traverser." },
+    syntheses: { rencontre: "Une transformation nécessaire est en marche, et c'est elle qui rend la suite possible.", relation: "Une transformation inévitable est en marche, et il faut la traverser plutôt que la contourner.", separation: "La transformation est inévitable : on ne revient pas en arrière, on traverse." },
+    parole: "Cette arche était dressée sur ta route avant que tu ne saches marcher. Ton histoire change de forme : ce qui était ne sera plus, ce qui sera n'est pas encore. Tu peux ralentir le pas. Tu ne peux pas contourner l'arche. Franchis-la. De l'autre côté, la lumière est neuve. Ainsi passent toutes les grandes histoires." },
+  { n: 23, titre: "Le Vent qui Tourne", phase: "crepuscule", voix: "E", img: "23-le-vent-qui-tourne.jpg",
+    mot: "RENVERSEMENT",
+    annonces: { rencontre: "Le vent tourne en ta faveur : une période creuse s'achève, la dynamique s'inverse. Mets-toi dans le nouveau courant.", relation: "La dynamique s'inverse : ce qui était acquis se rejoue, les rôles changent. Adapte-toi au nouveau sens du vent au lieu de lutter.", separation: "Les rôles s'inversent : celui qui partait peut revenir, celle qui attendait peut cesser d'attendre. Rien n'est plus figé." },
+    syntheses: { rencontre: "La dynamique s'inverse en ta faveur, prends le nouveau courant.", relation: "La dynamique entre vous s'inverse : ce qui était acquis se rejoue.", separation: "La dynamique s'inverse : les rôles se rejouent, rien n'est plus figé." },
+    parole: "C'est mon souffle que tu sens. Je fais tourner le vent, et avec lui votre histoire : ce qui était acquis se rejoue, ce qui dormait s'éveille, ce qui menait suit désormais. Ne t'accroche pas à l'ancien sens du vent. Déploie-toi dans le nouveau. Ceux qui luttent contre mon souffle s'épuisent. Ceux qui le prennent vont loin." },
+  { n: 24, titre: "L'Étoile du Soir", phase: "crepuscule", voix: "E", img: "24-l-etoile-du-soir.jpg",
+    mot: "CE QUI RESTE",
+    annonces: { rencontre: "De chaque histoire passée, quelque chose de précieux te reste : tu sais désormais ce que tu cherches. Cette boussole te guidera.", relation: "Quelque chose de ce lien survivra au changement. Tout ne se perd pas : suis ce qui demeure au lieu de pleurer ce qui part.", separation: "Tout ne s'est pas perdu dans cette fin : quelque chose de vous survit, en toi. Suis cette lumière-là." },
+    syntheses: { rencontre: "Ce qui reste des histoires passées devient ta boussole.", relation: "Une part du lien est destinée à durer, et c'est elle qu'il faut suivre.", separation: "Une part de ce qui fut demeure, et c'est elle qui éclaire la suite." },
+    parole: "Le jour s'éteint, et pourtant regarde : j'allume déjà. Cette étoile est ma parole dans ton ciel qui s'assombrit. Quelque chose de ce lien est destiné à survivre au changement, une braise que le soir n'éteindra pas. Ne pleure pas la lumière qui part. Suis celle que je viens d'allumer. Ainsi demeure ce qui doit demeurer." },
+  { n: 25, titre: "La Fatigue Voilée", phase: "crepuscule", voix: "N", img: "25-la-fatigue-voilee.jpg",
+    mot: "USURE SILENCIEUSE",
+    annonces: { rencontre: "L'attente t'a fatiguée plus que tu ne l'admets, et cette lassitude se voit. Repose ton cœur avant de le tendre à nouveau.", relation: "Une lassitude s'installe sans bruit, chez toi ou chez l'autre. Elle n'est pas encore dite : occupe-t'en avant qu'elle ne devienne un adieu.", separation: "Tu t'épuises à porter cette histoire. La fatigue que tu sens est le signe qu'il faut déposer, pas serrer plus fort." },
+    syntheses: { rencontre: "Mais une fatigue s'est installée, et le cœur demande repos avant de se tendre.", relation: "Mais une usure silencieuse s'installe, et elle demande d'être entendue avant qu'il ne soit tard.", separation: "Mais l'épuisement est là, et il demande de déposer plutôt que de serrer." },
+    parole: "Je pose mon voile sur des épaules qui ne savent pas encore qu'elles plient. Une lassitude s'est installée, chez toi, chez l'autre, peut-être chez les deux. Elle ne se dit pas. Elle ne se crie pas. Elle s'accumule. Je te la montre avant qu'elle ne devienne un adieu : les cœurs fatigués ne partent pas d'un coup. Ils s'éteignent doucement. Veille au feu." },
+  { n: 26, titre: "L'Adieu Silencieux", phase: "crepuscule", voix: "N", img: "26-l-adieu-silencieux.jpg",
+    mot: "DÉTACHEMENT",
+    annonces: { rencontre: "Quelque chose en toi doit partir pour que quelqu'un puisse arriver : une habitude, une peur, un fantôme. Ce deuil discret ouvre la porte.", relation: "Un détachement a commencé en silence. Si ce lien compte pour toi, c'est maintenant qu'il faut le retenir, pas après.", separation: "Le détachement se fait, en toi ou en l'autre, sans bruit. Laisse cet adieu s'accomplir : il travaille pour ta paix." },
+    syntheses: { rencontre: "Un adieu discret doit se faire en toi, et il ouvre la porte.", relation: "Un détachement a commencé en silence, et le retenir ne sera possible que maintenant.", separation: "Un adieu silencieux s'accomplit, et il travaille pour ta paix." },
+    parole: "Quelqu'un s'éloigne, et tu regardes ailleurs. Le détachement a commencé, non dans les mots, dans le secret d'un cœur, là où je suis seule à entrer. Mon rideau descend lentement sur cette scène. Je te le dis sans cruauté : ce qui se joue là se joue sans bruit. Si tu veux retenir, retiens maintenant. Après, ce sera de la mémoire." },
+  { n: 27, titre: "La Porte Dérobée", phase: "crepuscule", voix: "N", img: "27-la-porte-derobee.jpg",
+    mot: "ISSUE CACHÉE",
+    annonces: { rencontre: "La rencontre viendra par où tu ne l'attends pas : un lieu, un cercle, un chemin que tu n'as pas envisagé. Change d'itinéraire.", relation: "Ce qui semble bloqué a une issue que personne n'a encore vue : un mot jamais dit, un geste jamais tenté. Cherche-la, elle existe.", separation: "Cette histoire n'a pas dit son dernier mot, ou ta liberté passe par une porte que tu n'as pas vue. Une issue existe." },
+    syntheses: { rencontre: "Et l'ouverture viendra par où tu ne l'attends pas.", relation: "Et là où tout semble bloqué, une issue existe encore, que personne n'a tentée.", separation: "Et une issue existe encore, là où personne n'a regardé." },
+    parole: "Vous croyez le mur sans issue. Vous n'avez pas mes yeux. Il existe une porte que personne n'a vue, petite, couverte de lierre, entrouverte. Une issue que ni toi ni lui n'avez encore pensée : un mot jamais dit, un geste jamais tenté, un pardon jamais offert. Je la tiens ouverte. Cherche le lierre. Ce qui semble fini ne l'est pas toujours." },
+  { n: 28, titre: "La Fin Avouée", phase: "nuit", voix: "H", img: "28-la-fin-avouee.jpg",
+    mot: "C'EST FINI",
+    annonces: { rencontre: "Une attente doit finir : celle que tu portes pour quelqu'un qui ne viendra pas, ou plus. La reconnaître libère la place.", relation: "Un chapitre de votre histoire est terminé, et le reconnaître vous libère. Ce qui suit ne pourra pas ressembler à ce qui précède.", separation: "Cette histoire est terminée, et le reconnaître va te libérer. Ferme ce livre : c'est la condition pour en ouvrir un autre." },
+    syntheses: { rencontre: "Ce qui vient demande de clore une attente : elle est finie, et le dire libère la place.", relation: "Ce qui vient demande de clore un chapitre : il est fini, et le suivant sera autre.", separation: "Ce qui vient demande de refermer cette histoire : elle est finie, et l'accepter te libère." },
+    parole: "Même dans la nuit, je sais faire la clarté. Écoute-la : cette histoire est terminée. Je ne te l'annonce pas pour te briser, je te l'annonce pour te rendre libre. Tant que tu ne fermes pas le livre, tu ne peux pas en ouvrir un autre. Referme-le. Vois : même fermées, les belles pages montent en lumière. Rien de ce qui fut vécu n'est perdu. Mais c'est fini. Je le vois, et maintenant tu le sais." },
+  { n: 29, titre: "Le Ciel Étoilé", phase: "nuit", voix: "H", img: "29-le-ciel-etoile.jpg",
+    mot: "ESPOIR FONDÉ",
+    annonces: { rencontre: "Ton ciel n'est pas vide : des signes réels montrent que l'amour existe pour toi. Le manque te fait croire au désert, regarde mieux.", relation: "Tout n'est pas perdu, et ce n'est pas une consolation : des signes réels le montrent. Le vide que tu ressens n'est pas la réalité.", separation: "Malgré l'absence, tout n'est pas perdu : des signes réels le montrent. Le vide que tu ressens n'est pas toute la vérité." },
+    syntheses: { rencontre: "Et malgré le manque, des signes réels annoncent que l'amour existe pour toi.", relation: "Et malgré le doute, des signes réels annoncent que tout n'est pas perdu.", separation: "Et malgré l'absence, des signes réels annoncent que tout n'est pas perdu." },
+    parole: "Tu me crois partie ? Lève les yeux. J'ai laissé des lumières dans la nuit, des signes réels, pas des consolations : un cœur dessiné dans les étoiles, des preuves que tout n'est pas perdu. Le manque te fait croire au vide. Le ciel te répond le contraire. Compte les étoiles au lieu de compter les absences. Ma lumière ne t'a jamais quittée." },
+  { n: 30, titre: "La Flamme Veilleuse", phase: "nuit", voix: "H", img: "30-la-flamme-veilleuse.jpg",
+    mot: "LIEN EN VEILLE",
+    annonces: { rencontre: "Quelqu'un pense à toi dans le silence : une personne croisée, un lien ancien jamais tenté. Une flamme brûle déjà quelque part pour toi.", relation: "Même dans la distance ou le froid du moment, l'autre pense à toi. Le lien est en veille, pas éteint : il peut se rallumer.", separation: "Quelqu'un pense encore à toi dans le silence. Ce lien n'est pas mort, il est en veille, et il peut se rallumer." },
+    syntheses: { rencontre: "Quelque part, une flamme brûle déjà pour toi dans le silence.", relation: "Dans le silence, le lien veille : il n'est pas éteint, il attend de se rallumer.", separation: "Dans le silence, quelqu'un veille encore sur ce lien : il n'est pas éteint, il attend." },
+    parole: "Cette flamme dans la nuit, c'est moi. On la croit petite : elle a traversé toutes les heures sombres sans s'éteindre. Quelqu'un veille sur toi. Quelqu'un pense encore à toi dans le silence. Ce lien n'est pas mort, il est en veille, et une flamme en veille peut rallumer un jour entier. Je brûle. Donc rien n'est éteint." },
+  { n: 31, titre: "Le Repos Nécessaire", phase: "nuit", voix: "E", img: "31-le-repos-necessaire.jpg",
+    mot: "PAUSE",
+    annonces: { rencontre: "Cette période sans histoire n'est pas un désert : c'est une convalescence. Ton cœur se refait avant d'aimer à nouveau.", relation: "Votre lien a besoin d'une respiration, pas d'une rupture. Ce temps calme travaille pour vous, ne le force pas.", separation: "Cette solitude est nécessaire. Ton cœur se répare : ne force rien, ce temps travaille pour toi." },
+    syntheses: { rencontre: "Ce qui vient passe par un repos nécessaire : ton cœur se refait avant d'aimer.", relation: "Ce qui vient passe par une respiration nécessaire, et elle travaille pour vous.", separation: "Ce qui vient passe par un repos nécessaire : ce temps de retrait travaille pour toi." },
+    parole: "C'est moi qui ai étendu la nuit sur toi. Ce retrait n'est pas un abandon : c'est une prescription du ciel. Ton cœur a trop porté, il devait se retirer pour se refaire. Dors sous ma couverture d'étoiles. Ne cherche pas, ne cours pas, ne force rien. Ce temps de silence était écrit. Ce qui te revient te trouvera reposée." },
+  { n: 32, titre: "La Nuit de Passage", phase: "nuit", voix: "E", img: "32-la-nuit-de-passage.jpg",
+    mot: "PRESQUE",
+    annonces: { rencontre: "Tu traverses la fin de la solitude, le plus dur est derrière toi. Tiens bon : l'horizon pâlit déjà.", relation: "Vous traversez la fin d'une période difficile, le plus dur est derrière vous. Tenez bon : une amélioration réelle approche.", separation: "Tu traverses la fin de la douleur, la partie la plus épaisse est derrière toi. Tiens bon : une amélioration réelle approche." },
+    syntheses: { rencontre: "Tu traverses la dernière part de l'attente : le plus dur est derrière toi.", relation: "Vous traversez la dernière part de l'épreuve : le plus dur est derrière vous.", separation: "Tu traverses la dernière part de l'obscurité : le plus dur est derrière toi." },
+    parole: "Regarde l'horizon : il pâlit. Tu traverses la dernière obscurité, la plus épaisse, celle qui précède le matin. Je sais que tu es lasse. Mais tu marches, et je veille sur ta marche. Chaque pas t'approche de la lumière que je te montre. Tiens bon. C'est presque l'heure. Aucune nuit n'a jamais vaincu une aube." },
+  { n: 33, titre: "Le Serment des Étoiles", phase: "nuit", voix: "E", img: "33-le-serment-des-etoiles.jpg",
+    mot: "LÂCHER-PRISE",
+    annonces: { rencontre: "La rencontre ne dépend plus de tes efforts : cesse de chercher partout, ce qui est pour toi te trouvera. Dépose le poids.", relation: "L'issue ne dépend plus de toi seule, et elle sera juste. Fais ta part, puis dépose le poids : le reste se pèsera sans toi.", separation: "L'issue ne dépend plus de toi, et elle sera juste. Ce qui doit revenir reviendra, ce qui doit partir partira : dépose le poids." },
+    syntheses: { rencontre: "L'issue ne dépend plus de tes efforts : ce qui est pour toi te trouvera.", relation: "L'issue ne t'appartient plus entièrement, et elle sera juste.", separation: "L'issue ne t'appartient plus, et elle sera juste : ce qui doit revenir reviendra." },
+    parole: "Lève les yeux : j'ai aligné les étoiles en balance, et ses plateaux sont justes. Voici mon serment : ce qui doit revenir reviendra. Ce qui doit partir partira. L'issue ne t'appartient plus, elle est pesée là-haut, et là-haut on ne se trompe pas. Dépose ce que tu portes. Ainsi est écrit, ainsi sera." },
+  { n: 34, titre: "Le Rêve qui Travaille", phase: "nuit", voix: "N", img: "34-le-reve-qui-travaille.jpg",
+    mot: "MATURATION",
+    annonces: { rencontre: "Rien ne semble bouger, mais tout mûrit : en toi, et chez quelqu'un que tu ne connais peut-être pas encore. L'immobilité est trompeuse.", relation: "Rien ne semble bouger, mais tout mûrit en silence, en toi comme en l'autre. L'apparente immobilité est trompeuse.", separation: "L'absence n'est pas stérile : quelque chose mûrit en toi, et quelque chose mûrit en l'autre, à votre insu." },
+    syntheses: { rencontre: "Sous l'apparente immobilité, tout mûrit déjà pour toi.", relation: "Sous l'apparente immobilité, tout mûrit en silence, en toi comme en l'autre.", separation: "Sous le silence de l'absence, tout mûrit, en toi comme en l'autre." },
+    parole: "Pendant que tu dors, je tisse. Des fils d'or au-dessus des cœurs endormis : le tien, le sien. L'absence que tu crois stérile transforme en silence, quelque chose mûrit en toi, quelque chose mûrit en lui, à votre insu. Ne juge rien à l'arrêt apparent des choses. Mes plus grands ouvrages se font les yeux fermés. Ce qui dort n'est jamais perdu." },
+  { n: 35, titre: "Le Retour Voilé", phase: "nuit", voix: "N", img: "35-le-retour-voile.jpg",
+    mot: "RETOUR",
+    annonces: { rencontre: "Quelqu'un de ton passé se rapproche : un lien ancien, une personne perdue de vue. Ce qui revient n'est pas toujours ce qu'on attend.", relation: "Quelque chose que vous croyiez dépassé revient : un sujet, une flamme, une habitude. Accueille ce retour, il a un sens.", separation: "Quelqu'un du passé se rapproche de toi sans que tu le saches encore. Prépare-toi : une présence revient." },
+    syntheses: { rencontre: "Et quelqu'un du passé refait, sans que tu le voies, le chemin vers toi.", relation: "Et quelque chose que vous croyiez dépassé revient, porteur de sens.", separation: "Et quelqu'un du passé refait, sans que tu le voies encore, le chemin vers toi." },
+    parole: "Quelqu'un approche dans ma brume. Tu ne le vois pas : tu regardes ailleurs. Une silhouette familière refait le chemin vers toi, un pas après l'autre, encore voilée. Je pourrais te dire son nom. Je ne le ferai pas : certains secrets doivent arriver par la porte, pas par la nuit. Prépare ton seuil. Je le garde jusqu'à l'heure." },
+  { n: 36, titre: "L'Aube Cachée", phase: "nuit", voix: "N", img: "36-l-aube-cachee.jpg",
+    mot: "RENOUVEAU",
+    annonces: { rencontre: "Une nouvelle histoire se prépare déjà, là où tu ne regardes pas. Ton attente n'est pas un vide : c'est la nuit juste avant une aube.", relation: "Votre lien porte une renaissance : une nouvelle façon de vous aimer se prépare, déjà formée, qui attend son heure.", separation: "Une nouvelle histoire se prépare déjà, là où tu ne regardes pas. Ce que tu vis n'est pas une fin : c'est la nuit juste avant une aube." },
+    syntheses: { rencontre: "Et une nouvelle histoire, déjà formée, attend son heure là où tu ne regardes pas.", relation: "Et votre lien porte une renaissance, déjà formée, qui attend son heure.", separation: "Et une nouvelle histoire, déjà formée, attend son heure là où tu ne regardes pas." },
+    parole: "Viens voir ce que je porte. On me croit stérile, moi l'obscure, et pourtant regarde : le jour dort dans mes bras. Une nouvelle histoire est déjà là, formée, vivante, elle attend son heure là où tu ne regardes pas. Ta nuit n'est pas une fin. Ta nuit est une mère. J'ai enfanté toutes les aubes du monde. Je porte la tienne." }
+];
+
+let prenom = "";
+let situation = "";
+let texteSynthese = "";
+let intention = "";
+let tirageEnCours = [];
+let cartesRetournees = 0;
+
+function montrerEcran(id) {
+  document.querySelectorAll(".ecran").forEach(e => e.classList.remove("actif"));
+  document.getElementById(id).classList.add("actif");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function verifierPorte() {
+  const saisie = document.getElementById("mot-de-passe").value.trim();
+  if (saisie === MOT_DE_PASSE) {
+    localStorage.setItem("hemera_acces", "ouvert");
+    montrerEcran("ecran-rituel");
+  } else {
+    document.getElementById("erreur-porte").textContent = "Ce n'est pas le mot juste. Essaie encore.";
+  }
+}
+
+function choisirSituation(el) {
+  situation = el.dataset.situation;
+  document.querySelectorAll(".situation-btn").forEach(b => b.classList.remove("choisi"));
+  el.classList.add("choisi");
+}
+
+function validerRituel() {
+  prenom = document.getElementById("prenom").value.trim();
+  intention = document.getElementById("intention").value.trim();
+  if (!prenom) {
+    document.getElementById("erreur-rituel").textContent = "Les divinités aiment savoir à qui elles parlent. Dis ton prénom.";
+    return;
+  }
+  if (!intention) {
+    document.getElementById("erreur-rituel").textContent = "Pose ton intention : une question, une situation, un prénom aimé.";
+    return;
+  }
+  if (!situation) {
+    document.getElementById("erreur-rituel").textContent = "Dis à l'oracle où tu en es : choisis ta situation.";
+    return;
+  }
+  document.getElementById("salutation").textContent = prenom + ", ton intention est posée";
+  montrerEcran("ecran-modes");
+}
+
+function melanger(tableau) {
+  const t = [...tableau];
+  for (let i = t.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [t[i], t[j]] = [t[j], t[i]];
+  }
+  return t;
+}
+
+function tirerUnePhase(clePhase) {
+  const cartesPhase = CARTES.filter(c => c.phase === clePhase);
+  return melanger(cartesPhase)[0];
+}
+
+function lancerTirage(mode) {
+  tirageEnCours = [];
+  cartesRetournees = 0;
+  const zoneCartes = document.getElementById("zone-cartes");
+  const zoneParoles = document.getElementById("zone-paroles");
+  zoneCartes.innerHTML = "";
+  zoneParoles.innerHTML = "";
+  document.getElementById("cloture").classList.remove("visible");
+  const syntheseReset = document.getElementById("synthese");
+  syntheseReset.classList.remove("visible");
+  syntheseReset.innerHTML = "";
+  texteSynthese = "";
+  document.getElementById("actions-tirage").classList.remove("visible");
+  document.getElementById("retour-copie").textContent = "";
+  document.getElementById("rappel-intention").innerHTML =
+    "Intention de <span>" + echapper(prenom) + "</span> : « " + echapper(intention) + " »";
+
+  if (mode === "parole") {
+    document.getElementById("titre-tirage").textContent = "La Parole du Jour";
+    tirageEnCours = [ melanger(CARTES)[0] ];
+  } else {
+    document.getElementById("titre-tirage").textContent = "La Roue du Jour";
+    tirageEnCours = [
+      tirerUnePhase("aube"),
+      tirerUnePhase("zenith"),
+      tirerUnePhase("crepuscule"),
+      tirerUnePhase("nuit")
+    ];
+  }
+
+  tirageEnCours.forEach((carte, index) => {
+    const bloc = document.createElement("div");
+    bloc.className = "emplacement phase-" + carte.phase;
+    bloc.innerHTML =
+      '<div class="phase-label">' + PHASES[carte.phase].nom + "</div>" +
+      '<div class="carte" id="carte-' + index + '" onclick="retourner(' + index + ')">' +
+        '<div class="carte-interieur">' +
+          '<div class="carte-dos"><img src="cartes/00-dos-de-carte.jpg" alt="Dos de carte"></div>' +
+          '<div class="carte-face"><img src="cartes/' + carte.img + '" alt="' + echapper(carte.titre) + '"></div>' +
+        "</div>" +
+      "</div>" +
+      '<div class="invite-flip" id="invite-' + index + '">Toucher pour révéler</div>';
+    zoneCartes.appendChild(bloc);
+  });
+
+  montrerEcran("ecran-tirage");
+}
+
+function retourner(index) {
+  const carte = document.getElementById("carte-" + index);
+  if (carte.classList.contains("retournee")) return;
+  carte.classList.add("retournee");
+  document.getElementById("invite-" + index).style.visibility = "hidden";
+  cartesRetournees++;
+
+  const donnee = tirageEnCours[index];
+  const parole = document.createElement("div");
+  parole.className = "parole";
+  parole.innerHTML =
+    "<h4>" + donnee.titre + "</h4>" +
+    '<div class="voix">' + PHASES[donnee.phase].nom + " · " + VOIX[donnee.voix] + "</div>" +
+    '<div class="msg">' + donnee.parole + "</div>" +
+    '<div class="mot-cle">' + donnee.mot + "</div>" +
+    '<div class="annonce-titre">Ce que cette carte annonce</div>' +
+    '<div class="annonce">' + donnee.annonces[situation] + "</div>";
+  document.getElementById("zone-paroles").appendChild(parole);
+  setTimeout(() => parole.classList.add("visible"), 550);
+
+  if (cartesRetournees === tirageEnCours.length) {
+    if (tirageEnCours.length === 4) {
+      const fragments = tirageEnCours.map(c => c.syntheses[situation]).join(" ");
+      const synthese = document.getElementById("synthese");
+      texteSynthese = prenom + ", voici ce que le cycle révèle. " + fragments;
+      synthese.innerHTML = "<h5>Ce que la Roue annonce</h5><p>" + echapper(prenom) + ", voici ce que le cycle révèle. " + fragments + "</p>";
+      setTimeout(() => synthese.classList.add("visible"), 1200);
+    }
+    setTimeout(() => {
+      const cloture = document.getElementById("cloture");
+      document.getElementById("cloture-texte").textContent =
+        tirageEnCours.length === 1
+          ? "La parole est dite, " + prenom + "."
+          : "La Roue est complète, " + prenom + ". Le cycle a parlé.";
+      cloture.classList.add("visible");
+      document.getElementById("btn-copier").style.display = tirageEnCours.length === 4 ? "inline-block" : "none";
+      document.getElementById("actions-tirage").classList.add("visible");
+    }, 1400);
+  }
+}
+
+
+function copierSynthese() {
+  const retour = document.getElementById("retour-copie");
+  const texte = texteSynthese + "\n\nL'Oracle d'Héméra · Ludmilla Énergie";
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texte).then(() => {
+      retour.textContent = "SYNTHÈSE COPIÉE";
+      setTimeout(() => retour.textContent = "", 3000);
+    }).catch(() => copieSecours(texte, retour));
+  } else {
+    copieSecours(texte, retour);
+  }
+}
+
+function copieSecours(texte, retour) {
+  const zone = document.createElement("textarea");
+  zone.value = texte;
+  document.body.appendChild(zone);
+  zone.select();
+  document.execCommand("copy");
+  document.body.removeChild(zone);
+  retour.textContent = "SYNTHÈSE COPIÉE";
+  setTimeout(() => retour.textContent = "", 3000);
+}
+
+function chargerImage(src) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = rej;
+    img.src = src;
+  });
+}
+
+async function telechargerTirage() {
+  const retour = document.getElementById("retour-copie");
+  retour.textContent = "CRÉATION DE L'IMAGE...";
+  try {
+    await document.fonts.ready;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const OR = "#c8a96e", IVOIRE = "#f0e8d6", SOMBRE = "#09070a";
+    const COULEURS_PHASE = { aube: "#e7b8a2", zenith: "#f5edd8", crepuscule: "#c87f4a", nuit: "#8a9cd6" };
+    const dateStr = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+    if (tirageEnCours.length === 4) {
+      canvas.width = 1600; canvas.height = 1780;
+      ctx.fillStyle = SOMBRE;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = OR;
+      ctx.font = "110px Allura";
+      ctx.fillText("La Roue du Jour", 800, 140);
+      ctx.fillStyle = IVOIRE;
+      ctx.font = "15px Raleway";
+      ctx.letterSpacing = "6px";
+      ctx.fillText("L'ORACLE D'HÉMÉRA", 800, 190);
+      ctx.letterSpacing = "0px";
+
+      const cx = 800, cy = 950, rayon = 470;
+      ctx.strokeStyle = OR;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, rayon, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const dos = await chargerImage("cartes/00-dos-de-carte.jpg");
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, 150, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(dos, cx - 150, cy - 225, 300, 450);
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(cx, cy, 150, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const positions = [
+        { x: cx, y: cy - rayon, tilt: 0 },
+        { x: cx + rayon, y: cy, tilt: 0.10 },
+        { x: cx, y: cy + rayon, tilt: 0 },
+        { x: cx - rayon, y: cy, tilt: -0.10 }
+      ];
+      const cw = 300, ch = 450;
+      for (let i = 0; i < 4; i++) {
+        const c = tirageEnCours[i];
+        const img = await chargerImage("cartes/" + c.img);
+        const p = positions[i];
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.tilt);
+        ctx.shadowColor = "rgba(0,0,0,0.7)";
+        ctx.shadowBlur = 30;
+        ctx.drawImage(img, -cw / 2, -ch / 2, cw, ch);
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = OR;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-cw / 2, -ch / 2, cw, ch);
+        ctx.fillStyle = COULEURS_PHASE[c.phase];
+        ctx.font = "17px Raleway";
+        ctx.letterSpacing = "4px";
+        ctx.textAlign = "center";
+        ctx.fillText(PHASES[c.phase].nom.toUpperCase(), 0, -ch / 2 - 18);
+        ctx.letterSpacing = "0px";
+        ctx.restore();
+      }
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = IVOIRE;
+      ctx.font = "italic 30px 'Cormorant Garamond'";
+      ctx.fillText("Tirage de " + prenom + " · " + dateStr, 800, 1690);
+      ctx.fillStyle = OR;
+      ctx.font = "14px Raleway";
+      ctx.letterSpacing = "4px";
+      ctx.fillText("LUDMILLA ÉNERGIE", 800, 1735);
+      ctx.letterSpacing = "0px";
+    } else {
+      canvas.width = 900; canvas.height = 1450;
+      ctx.fillStyle = SOMBRE;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.textAlign = "center";
+      ctx.fillStyle = OR;
+      ctx.font = "80px Allura";
+      ctx.fillText("La Parole du Jour", 450, 110);
+      ctx.fillStyle = IVOIRE;
+      ctx.font = "13px Raleway";
+      ctx.letterSpacing = "5px";
+      ctx.fillText("L'ORACLE D'HÉMÉRA", 450, 155);
+      ctx.letterSpacing = "0px";
+      const c = tirageEnCours[0];
+      const img = await chargerImage("cartes/" + c.img);
+      const cw = 640, ch = 960;
+      ctx.shadowColor = "rgba(0,0,0,0.7)";
+      ctx.shadowBlur = 40;
+      ctx.drawImage(img, 450 - cw / 2, 210, cw, ch);
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = OR;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(450 - cw / 2, 210, cw, ch);
+      ctx.fillStyle = IVOIRE;
+      ctx.font = "italic 28px 'Cormorant Garamond'";
+      ctx.fillText("Tirage de " + prenom + " · " + dateStr, 450, 1270);
+      ctx.fillStyle = OR;
+      ctx.font = "13px Raleway";
+      ctx.letterSpacing = "4px";
+      ctx.fillText("LUDMILLA ÉNERGIE", 450, 1320);
+      ctx.letterSpacing = "0px";
+    }
+
+    canvas.toBlob(blob => {
+      const lien = document.createElement("a");
+      lien.href = URL.createObjectURL(blob);
+      lien.download = tirageEnCours.length === 4 ? "roue-du-jour-hemera.png" : "parole-du-jour-hemera.png";
+      lien.click();
+      URL.revokeObjectURL(lien.href);
+      retour.textContent = "IMAGE TÉLÉCHARGÉE";
+      setTimeout(() => retour.textContent = "", 3000);
+    }, "image/png");
+  } catch (e) {
+    retour.textContent = "ERREUR LORS DE LA CRÉATION";
+    setTimeout(() => retour.textContent = "", 4000);
+  }
+}
+
+function nouveauTirage() {
+  montrerEcran("ecran-modes");
+}
+
+function echapper(txt) {
+  const div = document.createElement("div");
+  div.textContent = txt;
+  return div.innerHTML;
+}
+
+document.getElementById("mot-de-passe").addEventListener("keydown", e => { if (e.key === "Enter") verifierPorte(); });
+document.getElementById("prenom").addEventListener("keydown", e => { if (e.key === "Enter") validerRituel(); });
+
+if (localStorage.getItem("hemera_acces") === "ouvert") {
+  montrerEcran("ecran-rituel");
+}
+</script>
+</body>
+</html>
